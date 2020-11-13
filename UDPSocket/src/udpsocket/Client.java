@@ -26,23 +26,32 @@ public class Client {
      */
     public static void main(String[] args) throws UnknownHostException, IOException {
         try {
+            int clientPort=12345;
             // TODO code application logic here
             DatagramSocket client=new DatagramSocket();
             String send ="1";
-            byte[] sendByte=send.getBytes();
+            //Đóng gói thông tin vào gói tin DatagramPacket để gửi đi
+            byte[] sendData=new byte[1024];
             InetAddress remoteAddress=InetAddress.getByName("localhost");
-            DatagramPacket sendPacket=new DatagramPacket(sendByte, sendByte.length,remoteAddress,12345);
+            sendData=send.getBytes();
+            DatagramPacket sendPacket=new DatagramPacket(sendData, sendData.length,remoteAddress,clientPort);
+            //Gửi dữ liệu đến server
             client.send(sendPacket);
+            //Nhận dữ liệu đã qua xử lý từ server về
+            byte[] receiveData=new byte[1024];
+            try {
+                //Tạo đối tượng packet tử DatagramPacket để nhận dữ liệu từ phía client để xử lý
+                DatagramPacket receivePacket =new DatagramPacket(receiveData, receiveData.length);
+                client.receive(receivePacket);
+                System.out.println("4");
+                String s=new String(receivePacket.getData());
+                System.out.println(s);
+            } catch (Exception e) {
+                System.err.println(e);
+            }
             client.close();
-            
-            
-            
-            
-            
         } catch (SocketException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-    }
-    
+        }      
+    }   
 }
